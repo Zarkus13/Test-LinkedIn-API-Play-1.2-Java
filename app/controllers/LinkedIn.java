@@ -36,25 +36,34 @@ public class LinkedIn extends Controller {
 
         Map<String, String[]> allPersons = new HashMap<String, String[]>();
 
-        Document doc = WS.url("http://api.linkedin.com/v1/people-search?keywords=Java&country-code=fr&postal-code=" + 56000 + "&start=" + 0)
-            .oauth(LINKEDIN_SERVICE, USER_TOKEN, USER_SECRET)
-            .get()
-            .getXml();
+//        Document doc = WS.url("http://api.linkedin.com/v1/people-search?keywords=Java&country-code=fr&postal-code=" + 56000 + "&start=" + 0)
+//            .oauth(LINKEDIN_SERVICE, USER_TOKEN, USER_SECRET)
+//            .get()
+//            .getXml();
 
 //        peopleSearchByPostalCode(allPersons, "56000", 0);
 
-//        for(String postalCode : getPostalCodes()) {
-//            System.out.println("\n\nPostal code : " + postalCode);
-//
-//            peopleSearchByPostalCode(allPersons, postalCode, 0);
-//        }
+        for(String postalCode : getPostalCodes()) {
+            System.out.println("\n\nPostal code : " + postalCode);
+
+            peopleSearchByPostalCode(allPersons, "java", postalCode, 0);
+        }
 
         System.out.println("Nb of persons : " + allPersons.size());
 
-//        renderXml(allPersons);
-        renderXml(doc);
+        renderXml(allPersons);
+//        renderXml(doc);
     }
 
+
+//    public static void
+
+
+    /**
+     * Méthode permettant de récupérer tous les codes postaux stockés dans le fichier postal_codes.txt
+     *
+     * @return Les codes postaux uniques
+     */
     private static Set<String> getPostalCodes() {
         Set<String> postalCodes = new HashSet<String>();
         FileReader fr = null;
@@ -83,8 +92,22 @@ public class LinkedIn extends Controller {
         return postalCodes;
     }
 
-    private static Map<String, String[]> peopleSearchByPostalCode(Map<String, String[]> allPersons, String postalCode, Integer start) {
-        Document doc = WS.url("http://api.linkedin.com/v1/people-search?keywords=Java&country-code=fr&postal-code=" + postalCode + "&start=" + start)
+
+    /**
+     * Méthode permettant d'effectuer un appel WebService RESTful sur l'API de LinkedIn afin de chercher des personnes
+     * en fonction de mots clés et d'un code postal. Si la requête peut retourner plus de résultats que ce qui est
+     * effectivement retourné par la requête courante (la page courante), une nouvelle requête est exécutée pour les
+     * mêmes mots clé et le même code postal, afin de récupérer tous les résultats.
+     *
+     * @param allPersons Map contenant toutes les personnes récupérées. La clé étant l'ID de la personne
+     * @param keywords Mots clé à rechercher
+     * @param postalCode Le code postal de la ville dans laquelle effectuer la recherche
+     * @param start La position de départ des résultats à récupérer (10 pour une page)
+     *
+     * @return Les personnes récupérées
+     */
+    private static Map<String, String[]> peopleSearchByPostalCode(Map<String, String[]> allPersons, String keywords, String postalCode, Integer start) {
+        Document doc = WS.url("http://api.linkedin.com/v1/people-search?keywords=" + keywords + "&country-code=fr&postal-code=" + postalCode + "&start=" + start)
             .oauth(LINKEDIN_SERVICE, USER_TOKEN, USER_SECRET)
             .get()
             .getXml();
@@ -109,7 +132,7 @@ public class LinkedIn extends Controller {
         System.out.println("count : " + count);
 
         if(count != null && count != 0 && startCurrent + count < nbTotal)
-            return peopleSearchByPostalCode(allPersons, postalCode, (startCurrent + count));
+            return peopleSearchByPostalCode(allPersons, keywords, postalCode, (startCurrent + count));
         else
             return allPersons;
     }
