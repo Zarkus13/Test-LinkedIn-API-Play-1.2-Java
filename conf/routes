@@ -4,7 +4,7 @@
 
 # Home page
 GET     /                                       Application.index
-GET     /people                                 LinkedIn.people()
+GET     /people/{keywords}                      LinkedIn.people()
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

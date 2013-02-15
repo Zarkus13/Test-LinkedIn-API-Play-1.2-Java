@@ -1,4 +1,54 @@
 #{extends 'main.html' /}
 #{set title:'Home' /}
 
-All people : <a href="@{LinkedIn.people()}">@@{LinkedIn.people()}</a> <br/>
+<form action="@{LinkedIn.people()}" method="get">
+    <h2>Rechercher toutes les personnes en fonctions des principaux codes postaux de France :</h2>
+    <label for="Keywords">Mots clés :</label> <input type="text" name="keywords" id="Keywords" />
+    <input type="submit" value="Rechercher" />
+</form>
+
+<form action="@{LinkedIn.person()}" method="get">
+    <h2>Récupérer le profil d'une personne en particulier</h2>
+    <label for="ProfileID">ID du profil :</label> <input type="text" name="profileId" id="ProfileID" />
+    <input type="submit" value="Go" />
+</form>
+
+
+<h1>A noter :</h1>
+
+<p>
+    <ul>
+        <li>
+            La recherche de personnes à partir de mots clé et d'un code postal, ne retourne que les résultats du réseau
+            (direct ou non) de la personne exécutant la recherche, ce qui réduit le "rayon" d'action
+            de la recherche. <br/><br/>
+            Toutefois, les recherches sont effectuées sur les connaissances aux 1er, 2e, et 3e degré, ce qui peut
+            inclure un très grand nombre de personnes.
+        </li>
+        <li>
+            Les recherches ne peuvent retourner qu'un certain nombre de fois une même personne. Au dela, la recherche
+            est bloquée et une erreur est retournée.
+        </li>
+        <li>
+            Les "Facets" permettent d'affiner les résultats de recherche (Ex : récupérer uniquement les personnes
+            habitant à un certain endroit, travaillant dans une certaine entreprise, ou étant uniquement en premier
+            degré de relation avec l'utilisateur courant).
+        </li>
+        <li>
+            Pour l'affichage du profil d'une personne précise, il y a deux types de profil possibles :
+            <ol>
+                <li>
+                    Le profil <b>public</b> de l'utilisateur, dont les champs retournés dépendent des paramètres de
+                    confidentialité que l'utilisateur a choisi.<br/>
+                    Un profil public peut être récupéré en-dehors des trois degrés de relation de l'utilisateur courant.
+                </li>
+                <li>
+                    Le profil <b>standard</b> de l'utilisateur, dont les champs retournées dépendent de ce qu'a le droit
+                    de voir l'utilisateur effectuant la requête (en fonction, entre autre, du degré de relation), ainsi
+                    que des paramètres de confidentialité que l'utilisateur a choisi.
+                </li>
+            </ol> <br/>
+            Il est possible de préciser quels champs du profil doivent être récupérés.
+        </li>
+    </ul>
+</p>

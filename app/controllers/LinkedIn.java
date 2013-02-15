@@ -32,7 +32,7 @@ public class LinkedIn extends Controller {
     private static String USER_TOKEN = "0aafc360-7562-4e31-a176-d89aa34becb5";
     private static String USER_SECRET = "7c52482c-dc45-405a-9c76-7bfa688c871c";
 
-    public static void people() {
+    public static void people(String keywords) {
 
         Map<String, String[]> allPersons = new HashMap<String, String[]>();
 
@@ -46,7 +46,7 @@ public class LinkedIn extends Controller {
         for(String postalCode : getPostalCodes()) {
             System.out.println("\n\nPostal code : " + postalCode);
 
-            peopleSearchByPostalCode(allPersons, "java", postalCode, 0);
+            peopleSearchByPostalCode(allPersons, keywords, postalCode, 0);
         }
 
         System.out.println("Nb of persons : " + allPersons.size());
@@ -56,7 +56,17 @@ public class LinkedIn extends Controller {
     }
 
 
-//    public static void
+    /**
+     * Action permettant de récupérer le profile d'une personne à partir de son ID
+     *
+     * @param profileId L'ID de la personne à récupérer
+     */
+    public static void person(Integer profileId) {
+        Document doc = WS.url("http://api.linkedin.com/v1/people/id=" + profileId)
+            .oauth(LINKEDIN_SERVICE, USER_TOKEN, USER_SECRET)
+            .get()
+            .getXml();
+    }
 
 
     /**
